@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">QRsampleApp</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="app_title">QRコードサンプルアプリ</string>
+    <string name="to_qr_read_button">QR読取</string>
+    <string name="to_generate_read_button">QR生成</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edit_form_ms">変換テキスト入力</string>
+
+</resources>

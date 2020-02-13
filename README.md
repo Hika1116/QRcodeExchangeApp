@@ -1,0 +1,2 @@
+# QRsampleApp
+QRsampleApp
