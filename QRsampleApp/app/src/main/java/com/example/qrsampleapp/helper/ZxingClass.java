@@ -27,7 +27,6 @@ public class ZxingClass {
         //QRコードのバージョンを指定
         hints.put(EncodeHintType.QR_VERSION, 20);
 
-
         //QRコードをBitmapで作成
         Bitmap bitmap = barcodeEncoder.encodeBitmap(context, BarcodeFormat.QR_CODE, size, size, hints);
 

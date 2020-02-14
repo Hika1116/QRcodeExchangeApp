@@ -11,12 +11,20 @@ import android.util.Log;
 import com.example.qrsampleapp.R;
 import com.example.qrsampleapp.fragment.DisplayQrCodeFragment;
 import com.example.qrsampleapp.fragment.QrGenerateFragment;
+import com.example.qrsampleapp.helper.RSACipherClass;
+
+import java.security.interfaces.RSAPublicKey;
+
 
 public class QRGenerateActivity extends AppCompatActivity implements QrGenerateFragment.OnConvertButtonListener, QrGenerateFragment.OnBackButtonListener, DisplayQrCodeFragment.OnBackToEditFormButtonListener {
+
+    RSAPublicKey opponentPublicKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.opponentPublicKey = (RSAPublicKey)getIntent().getSerializableExtra("opponentPublicKey");
         setContentView(R.layout.activity_qrgenerate);
     }
 
@@ -40,15 +48,24 @@ public class QRGenerateActivity extends AppCompatActivity implements QrGenerateF
         }
         Log.d("edit", editText);
 
-        //QRコード表示画面へ遷移
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if(fragmentManager != null){
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // BackStackを設定
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.replace(R.id.container, DisplayQrCodeFragment.newInstance(editText));
-            fragmentTransaction.commit();
+        try {
+            //暗号化
+            String encryption = RSACipherClass.encryptionByPuclicPey(editText, this.opponentPublicKey);
+            Log.d("encryption", encryption);
+            //QRコード表示画面へ遷移
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if(fragmentManager != null){
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                // BackStackを設定
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.container, DisplayQrCodeFragment.newInstance(encryption.toString()));
+                fragmentTransaction.commit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
 
     }
 

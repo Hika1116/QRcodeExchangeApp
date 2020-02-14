@@ -10,11 +10,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.qrsampleapp.R;
-import com.example.qrsampleapp.fragment.DisplayQrCodeFragment;
 import com.example.qrsampleapp.fragment.HomeFragment;
 import com.example.qrsampleapp.fragment.QrReadFragment;
+import com.example.qrsampleapp.helper.RSACipherClass;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 public class MainActivity
         extends AppCompatActivity
@@ -23,10 +26,21 @@ public class MainActivity
     private boolean is_read_qr = false;
     private Bundle toQrReadFragmentBundle;
 
+    //自機の秘密鍵
+    RSAPrivateKey privateKey; //秘密鍵
+    //相手デバイスの公開鍵
+    RSAPublicKey opponentPublicKey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toQrReadFragmentBundle = new Bundle();
+
+        Intent intent = getIntent();
+        this.privateKey = (RSAPrivateKey)intent.getSerializableExtra("privateKey");
+        this.opponentPublicKey = (RSAPublicKey)intent.getSerializableExtra("opponentPublicKey");
+
+
         setContentView(R.layout.activity_main);
     }
 
@@ -50,18 +64,25 @@ public class MainActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-            } else {
 
-                toQrReadFragmentBundle = new Bundle();
-                toQrReadFragmentBundle.putString("result_text", result.getContents());
-                this.is_read_qr = true;
-
-            }
-        } else {
+        if(result == null){
             super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+        if(result.getContents() == null) {
+            Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        this.is_read_qr = true;
+
+        try {
+            //復号化
+            String plain = RSACipherClass.decryptionByPrivateKey(result.getContents(), this.privateKey);
+            toQrReadFragmentBundle = new Bundle();
+            toQrReadFragmentBundle.putString("result_text", plain);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -70,6 +91,7 @@ public class MainActivity
         Log.d("click","click generate button");
         Intent intent = new Intent(MainActivity.this, QRGenerateActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+        intent.putExtra("opponentPublicKey",this.opponentPublicKey);
         startActivity(intent);
     }
 

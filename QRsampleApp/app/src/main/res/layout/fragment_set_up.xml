@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.SetUpFragment"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="QRコードサンプルアプリ"
+        android:textSize="10pt"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="セットアップ"
+        android:layout_marginTop="20px"
+        android:textSize="8pt"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="50px">
+
+        <CheckBox
+            android:id="@+id/get_key_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="キー取得"/>
+
+        <CheckBox
+            android:id="@+id/send_key_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="キー送信"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="400px"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:layout_marginTop="50px"/>
+
+</LinearLayout>
